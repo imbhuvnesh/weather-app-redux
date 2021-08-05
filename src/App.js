@@ -1,23 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import useFetch from "./helper/useFetch";
+import { Container } from "@material-ui/core";
+import PlaceData from "./components/PlaceData";
+import { useSelector } from "react-redux";
 
 function App() {
+  const place = useSelector((state) => state.place);
+  const BASE_URL = `http://api.weatherapi.com/v1/current.json?key=d82f0c5dabb34168a81111352210408&q=${place}`;
+  const { data, isPending, error } = useFetch(BASE_URL);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {isPending && <h1>Loading...</h1>}
+      {error && <div>{error}</div>}
+      {!isPending && !error && (
+        <Container maxWidth="sm">
+          <PlaceData data={data} isPending={isPending} error={error} />
+        </Container>
+      )}
     </div>
   );
 }
